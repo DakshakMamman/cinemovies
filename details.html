@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Details - CineStream</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/details.js"></script>
+</head>
+<body class="bg-black text-white min-h-screen">
+  <!-- NAVIGATION -->
+  <nav class="px-6 lg:px-16 py-4 flex items-center justify-between bg-black/90 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-800">
+    <a href="./index.html" class="text-red-600 text-2xl font-black uppercase tracking-tight">CineStream</a>
+    <div class="hidden md:flex items-center gap-7 flex-1 justify-center">
+      <a href="./index.html" class="text-gray-300 hover:text-white text-sm font-medium tracking-wider uppercase transition-colors">Home</a>
+      <a href="./movies.html" class="text-white text-sm font-medium tracking-wider uppercase">Movies</a>
+      <a href="javascript:void(0)" class="text-gray-300 hover:text-white text-sm font-medium tracking-wider uppercase transition-colors" onclick="protectNavigation(event, '#')">Series</a>
+      <a href="javascript:void(0)" class="text-gray-300 hover:text-white text-sm font-medium tracking-wider uppercase transition-colors" onclick="protectNavigation(event, '#')">Anime</a>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <div class="nav-auth-section p-4 flex justify-between">
+        <a href="login.html" class="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded transition">Sign In</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO BACKGROUND -->
+  <div class="relative h-96 overflow-hidden">
+    <img id="hero-backdrop" src="" alt="Movie Backdrop" class="w-full h-full object-cover opacity-40" />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black"></div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container mx-auto px-6 py-8">
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- LEFT COLUMN - POSTER & ACTIONS -->
+      <div class="lg:col-span-1">
+        <div class="relative group cursor-pointer" onclick="playTrailer()">
+          <img id="movie-poster" src="" alt="Movie Poster" class="w-full rounded-xl shadow-2xl transition-transform duration-300 group-hover:scale-105" />
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+            <div class="bg-red-600 text-white rounded-full p-4 transform scale-0 group-hover:scale-110 transition-transform">
+              <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="flex gap-3 mt-6">
+          <button onclick="playTrailer()" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-3 font-semibold rounded-lg transition-all transform hover:-translate-y-1 flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+            </svg>
+             Play
+          </button>
+          <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 font-semibold rounded-lg transition-all flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 17a1 1 0 011-2 0v3a1 1 0 012 2 0 0 1 1v3a1 1 0 01-1-1-1H3a1 1 0 01-1-1-1zM17 8a1 1 0 00-1.414-1.414L9.586 8.586H7a1 1 0 001.414 1.414L17 8z"/>
+            </svg>
+            Add to List
+          </button>
+          <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 font-semibold rounded-lg transition-all flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 17a1 1 0 011-2 0v3a1 1 0 012 2 0 0 1 1v3a1 1 0 01-1-1-1H3a1 1 0 01-1-1-1zM17 8a1 1 0 00-1.414-1.414L9.586 8.586H7a1 1 0 001.414 1.414L17 8z"/>
+            </svg>
+            Download
+          </button>
+        </div>
+      </div>
+
+      <!-- MIDDLE COLUMN - MOVIE INFO -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- TITLE AND RATING -->
+        <div class="flex items-start justify-between gap-4 mb-4">
+          <h1 id="title" class="text-3xl lg:text-4xl font-bold text-white"></h1>
+          <div class="flex items-center gap-2">
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902l1.07 3.292a1 1 0 10.394 10.394 0 01.951.495l1.07 3.292a1 1 0 10.394 10.394 0 01.951.495l-1.07-3.292a1 1 0 00-1.414-1.414L9.049 2.927c.3-.921 1.603-.921 1.902z"/>
+              </svg>
+              <span id="rating" class="text-xl font-semibold text-white">8.5</span>
+              <span class="text-gray-400 text-sm">/10</span>
+            </div>
+            <span id="year" class="text-gray-400 text-lg">2024</span>
+          </div>
+        </div>
+
+        <!-- GENRES AND INFO -->
+        <div class="space-y-4">
+          <div class="flex flex-wrap gap-2" id="genres">
+            <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">Action</span>
+            <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">Adventure</span>
+            <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">Sci-Fi</span>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1a1 1 0 112 2 0 0 1 1v1a1 1 0 01-1-1-1H6a1 1 0 01-1-1-1z" clip-rule="evenodd"/>
+              </svg>
+              <span class="text-gray-400">Runtime:</span>
+              <span id="runtime" class="text-white font-medium">2h 28m</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M8 7a1 1 0 100-1 1v3a1 1 0 011 2 0 0 1 1h3a1 1 0 012-2 0 0 1 1v3a1 1 0 01-1-1-1H8a1 1 0 01-1-1-1zM8 7a1 1 0 100-1 1v1a1 1 0 011 2 0 0 1 1h3a1 1 0 012-2 0 0 1 1v3a1 1 0 01-1-1-1H8a1 1 0 01-1-1-1z"/>
+              </svg>
+              <span class="text-gray-400">Release:</span>
+              <span id="release-date" class="text-white font-medium">March 15, 2024</span>
+            </div>
+          </div>
+
+        <!-- DESCRIPTION -->
+        <div class="bg-gray-800 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-white mb-3">Overview</h3>
+          <p id="desc" class="text-gray-300 leading-relaxed"></p>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN - CAST & CREW -->
+      <div class="lg:col-span-1 space-y-6">
+        <!-- CAST -->
+        <div class="bg-gray-800 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-white mb-4">Top Cast</h3>
+          <div class="space-y-3" id="cast">
+            <div class="flex items-center gap-3">
+              <img src="https://image.tmdb.org/t/p/w200/kp3XeYmT4Qk3l9u3laz0a.jpg" alt="Actor" class="w-12 h-12 rounded-full object-cover" />
+              <div>
+                <p class="text-white font-medium">Chris Evans</p>
+                <p class="text-gray-400 text-sm">Captain America</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <img src="https://image.tmdb.org/t/p/w200/4T1wSuXuwJxaiKYN1BppJ.jpg" alt="Actor" class="w-12 h-12 rounded-full object-cover" />
+              <div>
+                <p class="text-white font-medium">Scarlett Johansson</p>
+                <p class="text-gray-400 text-sm">Black Widow</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <img src="https://image.tmdb.org/t/p/w200/kp3XeYmT4Qk3l9u3laz0a.jpg" alt="Actor" class="w-12 h-12 rounded-full object-cover" />
+              <div>
+                <p class="text-white font-medium">Robert Downey Jr.</p>
+                <p class="text-gray-400 text-sm">Iron Man</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CREW -->
+        <div class="bg-gray-800 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-white mb-4">Crew</h3>
+          <div class="space-y-3" id="crew">
+            <div class="flex items-center gap-3">
+              <img src="https://image.tmdb.org/t/p/w200/kp3XeYmT4Qk3l9u3laz0a.jpg" alt="Director" class="w-12 h-12 rounded-full object-cover" />
+              <div>
+                <p class="text-white font-medium">Russo Brothers</p>
+                <p class="text-gray-400 text-sm">Directors</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <img src="https://image.tmdb.org/t/p/w200/kp3XeYmT4Qk3l9u3laz0a.jpg" alt="Producer" class="w-12 h-12 rounded-full object-cover" />
+              <div>
+                <p class="text-white font-medium">Kevin Feige</p>
+                <p class="text-gray-400 text-sm">Producer</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRAILER SECTION -->
+    <div id="trailer-section" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-8">
+      <div class="relative max-w-4xl w-full">
+        <button onclick="closeTrailer()" class="absolute top-4 right-4 text-white/80 hover:text-white text-gray-400 z-10">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 01.414 1.414L10 10.586a1 1 0 01.414 1.414L4.293 4.293a1 1 0 00-1.414-1.414z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+        <div id="player" class="w-full aspect-video bg-black rounded-lg overflow-hidden">
+          <!-- Trailer will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-black border-t border-gray-800 py-8">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-sm">
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline text-gray-400">FAQ</a></li>
+          <li><a href="#" class="hover:underline text-gray-400">Help Centre</a></li>
+          <li><a href="#" class="hover:underline text-gray-400">Account</a></li>
+        </ul>
+        <ul class="space-y-2">
+          <li><a href="#" class="hover:underline text-gray-400">Ways to Watch</a></li>
+          <li><a href="#" class="hover:underline text-gray-400">Corporate Information</a></li>
+          <li><a href="#" class="hover:underline text-gray-400">Only on CineStream</a></li>
+        </ul>
+      </div>
+      <div class="text-center text-gray-500 text-sm">
+        <p>&copy; 2024 CineStream Nigeria</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
